@@ -4,14 +4,16 @@ using DAL.Persistence;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace DAL.Migrations
 {
     [DbContext(typeof(ApiContext))]
-    partial class ApiContextModelSnapshot : ModelSnapshot
+    [Migration("20180721155754_InitialCreate")]
+    partial class InitialCreate
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -153,19 +155,7 @@ namespace DAL.Migrations
                         .ValueGeneratedOnAdd()
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
-                    b.Property<string>("BuildingAddress");
-
-                    b.Property<string>("BuildingCity");
-
-                    b.Property<string>("BuildingCountry");
-
-                    b.Property<string>("BuildingState");
-
-                    b.Property<string>("BuildingTitle");
-
-                    b.Property<string>("BuildingZip");
-
-                    b.Property<string>("Class");
+                    b.Property<int>("BuildingId");
 
                     b.Property<DateTime?>("Created")
                         .IsRequired()
@@ -174,41 +164,25 @@ namespace DAL.Migrations
 
                     b.Property<string>("CreatedBy");
 
-                    b.Property<string>("Designation");
-
                     b.Property<float>("Distance");
 
                     b.Property<float>("Duration");
 
-                    b.Property<string>("Email");
-
-                    b.Property<string>("EmployeeAddress");
-
-                    b.Property<string>("EmployeeCity");
-
-                    b.Property<string>("EmployeeCountry");
-
-                    b.Property<string>("EmployeeState");
-
-                    b.Property<string>("EmployeeZip");
-
-                    b.Property<string>("FirstName");
-
-                    b.Property<string>("LastName");
+                    b.Property<int>("EmployeeId");
 
                     b.Property<DateTime?>("LastUpdated");
 
                     b.Property<string>("LastUpdatedBy");
 
-                    b.Property<string>("Phone");
-
                     b.Property<int?>("ReportId");
-
-                    b.Property<string>("Submarket");
 
                     b.HasKey("Id");
 
+                    b.HasIndex("BuildingId");
+
                     b.HasIndex("CreatedBy");
+
+                    b.HasIndex("EmployeeId");
 
                     b.HasIndex("LastUpdatedBy");
 
@@ -383,9 +357,19 @@ namespace DAL.Migrations
 
             modelBuilder.Entity("DAL.Core.Models.ProjectionData", b =>
                 {
+                    b.HasOne("DAL.Core.Models.Building", "Building")
+                        .WithMany()
+                        .HasForeignKey("BuildingId")
+                        .OnDelete(DeleteBehavior.Cascade);
+
                     b.HasOne("DAL.Core.Models.User", "CreatedByUser")
                         .WithMany()
                         .HasForeignKey("CreatedBy");
+
+                    b.HasOne("DAL.Core.Models.Employee", "Employee")
+                        .WithMany()
+                        .HasForeignKey("EmployeeId")
+                        .OnDelete(DeleteBehavior.Cascade);
 
                     b.HasOne("DAL.Core.Models.User", "UpdatedByUser")
                         .WithMany()

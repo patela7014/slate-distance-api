@@ -4,14 +4,16 @@ using DAL.Persistence;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace DAL.Migrations
 {
     [DbContext(typeof(ApiContext))]
-    partial class ApiContextModelSnapshot : ModelSnapshot
+    [Migration("20180724043935_UpdateProjectionData")]
+    partial class UpdateProjectionData
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -159,6 +161,8 @@ namespace DAL.Migrations
 
                     b.Property<string>("BuildingCountry");
 
+                    b.Property<int?>("BuildingId");
+
                     b.Property<string>("BuildingState");
 
                     b.Property<string>("BuildingTitle");
@@ -188,6 +192,8 @@ namespace DAL.Migrations
 
                     b.Property<string>("EmployeeCountry");
 
+                    b.Property<int?>("EmployeeId");
+
                     b.Property<string>("EmployeeState");
 
                     b.Property<string>("EmployeeZip");
@@ -208,7 +214,11 @@ namespace DAL.Migrations
 
                     b.HasKey("Id");
 
+                    b.HasIndex("BuildingId");
+
                     b.HasIndex("CreatedBy");
+
+                    b.HasIndex("EmployeeId");
 
                     b.HasIndex("LastUpdatedBy");
 
@@ -383,9 +393,17 @@ namespace DAL.Migrations
 
             modelBuilder.Entity("DAL.Core.Models.ProjectionData", b =>
                 {
+                    b.HasOne("DAL.Core.Models.Building", "Building")
+                        .WithMany()
+                        .HasForeignKey("BuildingId");
+
                     b.HasOne("DAL.Core.Models.User", "CreatedByUser")
                         .WithMany()
                         .HasForeignKey("CreatedBy");
+
+                    b.HasOne("DAL.Core.Models.Employee", "Employee")
+                        .WithMany()
+                        .HasForeignKey("EmployeeId");
 
                     b.HasOne("DAL.Core.Models.User", "UpdatedByUser")
                         .WithMany()

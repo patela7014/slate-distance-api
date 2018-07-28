@@ -26,6 +26,14 @@ namespace ApiServer.Controllers
         private readonly IJwtFactory _jwtFactory;
         private readonly JwtIssuerOptions _jwtOptions;
 
+        public int UserIdentityId
+        {
+            get
+            {
+                var user = _userManager.FindByNameAsync(User.Identity.Name);
+                return user.Id;
+            }
+        }
         public AuthController(IUnitOfWork unitOfWork, IMapper mapper, IRepository<User> repository, UserManager<User> userManager, IJwtFactory jwtFactory, IOptions<JwtIssuerOptions> jwtOptions)
         {
             this.unitOfWork = unitOfWork;
@@ -69,7 +77,10 @@ namespace ApiServer.Controllers
             // check the credentials
             if (await _userManager.CheckPasswordAsync(userToVerify, password))
             {
-                return await Task.FromResult(_jwtFactory.GenerateClaimsIdentity(userName, userToVerify.Id.ToString()));
+                var response = await Task.FromResult(_jwtFactory.GenerateClaimsIdentity(userName, userToVerify.Id.ToString()));
+
+
+                return response;
             }
 
             // Credentials are invalid, or account doesn't exist
@@ -98,7 +109,6 @@ namespace ApiServer.Controllers
             //    var result = await _userManager.CreateAsync(userIdentity, model.Password);
             //    //if (!result.Succeeded) return new BadRequestObjectResult(Errors.AddErrorsToModelState(result, ModelState));
             //}
-            await unitOfWork.CompleteAsync();
             return Ok(result);
 
         }

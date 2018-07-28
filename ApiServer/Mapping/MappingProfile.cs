@@ -16,45 +16,93 @@ namespace ApiServer.Mapping
             CreateMap<UsersListResource, User>()
                 .ReverseMap();
 
-            CreateMap<EventAddResource, Event>()
+            CreateMap<BuildingDto, Building>()
                 .ReverseMap();
 
-            CreateMap<EventListResource, Event>()
-                .ReverseMap()
-                .ForMember(t => t.Attendance, opt => opt.MapFrom(u => u.Users.Select(ua => new AttendanceResource { UserId = ua.User.Id })));
-
-            CreateMap<SabhaTypeResource, SabhaType>()
-                .ForMember(t => t.Sabha, opt => opt.Ignore())
+            CreateMap<EmployeeDto, Employee>()
                 .ReverseMap();
 
-            CreateMap<SabhaAddResource, Sabha>()
-                .ReverseMap();
+            CreateMap<Project, ProjectDto>()
+                .ForMember(pd => pd.CreatedBy, opt => opt.MapFrom(p => string.Format($"{p.CreatedByUser.FirstName} {p.CreatedByUser.LastName}") ));
 
-            CreateMap<Sabha, SabhaListResource>()
-                .ForMember(t => t.SabhaType, opt => opt.MapFrom(s => s.SabhaType.Type))
-                .ForMember(t => t.Users, opt => opt.MapFrom(u => u.Users.Select(ua => new UsersListResource { Id = ua.User.Id, FirstName = ua.User.FirstName, MidName = ua.User.MidName, LastName = ua.User.LastName, HomePhone = ua.User.HomePhone, PhoneNumber = ua.User.PhoneNumber, Email = ua.User.Email })))
-                .ReverseMap();
-
-            CreateMap<AddAttendanceResource, Event>()
-                .ForMember(e => e.Id, opt => opt.Ignore())
-                .ForMember(e => e.Users, opt => opt.Ignore())
-                .AfterMap((a, e) => {
-                    // Remove unselected Users
-                    var removedUsers = e.Users.Where(u => !a.Users.Contains(u.UserId)).ToList();
-                    foreach (var f in removedUsers)
+            CreateMap<ProjectDto, Project>()
+                .ForMember(p => p.Id, pd => pd.Ignore())
+                .ForMember(p => p.Buildings, pd => pd.Ignore())
+                .AfterMap((pd, p) =>
+                {
+                    var addedBuildings = pd.Buildings.Select(g => g);
+                    foreach (var b in addedBuildings)
                     {
-                        e.Users.Remove(f);
+                        var building = new Building
+                        {
+                            ProjectId = pd.Id == 0 ? 0 : (int)pd.Id,
+                            Title = b.Title,
+                            City = b.City,
+                            Address = b.Address,
+                            Class = b.Class,
+                            Country = b.Country,
+                            IsActive = true,
+                            State = b.State,
+                            Submarket = b.Submarket,
+                            Zip = b.Zip
+                        };
+
+                        p.Buildings.Add(building);
                     }
 
-                    // Add new Users
-                    var addedUsers = a.Users.Where(id => !e.Users.Any(u => u.UserId == id)).Select(id => new EventAttendance { UserId = id }).ToList();
-                    foreach (var f in addedUsers)
+                });
+
+            CreateMap<ProjectionDataDto, ProjectionData>()
+                .ForMember(p => p.Id, opt => opt.MapFrom(pd => pd.Id == 0 ? 0 : (int)pd.Id))
+                .ForMember(p => p.CreatedByUser, opt => opt.Ignore())
+                .ForMember(p => p.LastUpdatedBy, opt => opt.MapFrom(pd => pd.UserId))
+                .AfterMap((pd, p) =>
+                {
+                    if(pd.UserId == null)
                     {
-                        e.Users.Add(f);
+                        p.CreatedBy = pd.UserId;
                     }
                 })
                 .ReverseMap();
-        }
 
+            CreateMap<ReportDto, Report>()
+                .ForMember(r => r.Id, rd => rd.Ignore())
+                .ForMember(r => r.Projections, rd => rd.Ignore())
+                .AfterMap((rd, r) =>
+                {
+                    var addedProjections = rd.Projections.Select(g => g);
+                    foreach (var p in addedProjections)
+                    {
+                        var projectionData = new ProjectionData
+                        {
+                            BuildingAddress = p.BuildingAddress,
+                            BuildingCity = p.BuildingCity,
+                            BuildingCountry = p.BuildingCountry,
+                            BuildingState = p.BuildingState,
+                            BuildingTitle = p.BuildingTitle,
+                            BuildingZip = p.BuildingZip,
+                            Class = p.Class,
+                            Designation = p.Designation,
+                            Distance = p.Distance,
+                            Duration = p.Duration,
+                            Email = p.Email,
+                            EmployeeAddress = p.EmployeeAddress,
+                            EmployeeCity = p.EmployeeCity,
+                            EmployeeState = p.EmployeeState,
+                            EmployeeCountry = p.EmployeeCountry,
+                            EmployeeZip = p.EmployeeZip,
+                            FirstName = p.FirstName,
+                            LastName = p.LastName,
+                            Phone = p.Phone,
+                            Submarket = p.Submarket
+                        };
+
+                        r.Projections.Add(projectionData);
+
+                    }
+
+                });
+
+        }
     }
 }

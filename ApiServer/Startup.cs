@@ -17,6 +17,9 @@ using DAL.Helpers;
 using Microsoft.Extensions.DependencyInjection.Extensions;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
+using DAL.Services.Interfaces;
+using DAL.Services;
+using DAL.Resources;
 
 namespace ApiServer
 {
@@ -36,19 +39,20 @@ namespace ApiServer
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
+            services.Configure<ServiceSettings>(Configuration.GetSection("ServiceSettings"));
             services.AddAutoMapper();
             services.AddDbContext<ApiContext>(options => options.UseSqlServer(Configuration.GetConnectionString("DefaultConnection")));
 
-
-            services.AddScoped(typeof(IRepository<User>), typeof(UserRepository));
-            services.AddScoped(typeof(IRepository<Event>), typeof(EventRepository));
-            services.AddScoped(typeof(IRepository<Sabha>), typeof(SabhaRepository));
-            services.AddScoped(typeof(IRepository<SabhaType>), typeof(SabhaTypeRepository));
-            services.AddScoped(typeof(IRepository<EventAttendance>), typeof(AttendanceRepository));
-            services.AddScoped(typeof(ISabhaRepository), typeof(SabhaRepository));
-
+            services.AddScoped(typeof(IRepository<User>), typeof(GenericRepository<User>));
 
             services.AddScoped(typeof(IUnitOfWork), typeof(UnitOfWork));
+            services.AddScoped(typeof(IGenericService<EmployeeDto>), typeof(EmployeeService));
+            services.AddScoped(typeof(IGenericService<BuildingDto>), typeof(BuildingService));
+            services.AddScoped(typeof(IGenericService<ProjectionDataDto>), typeof(ProjectionDataService));
+            services.AddScoped(typeof(IGenericService<ProjectDto>), typeof(ProjectService));
+            services.AddScoped(typeof(IGenericService<ReportDto>), typeof(ReportService));
+            services.AddScoped(typeof(IGenericService<ReportProjectionDto>), typeof(ReportProjectionService));
+
             services.Configure<FormOptions>(x =>
             {
                 x.ValueLengthLimit = int.MaxValue;

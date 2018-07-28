@@ -48,6 +48,7 @@ namespace DAL.Core
         {
             return new ClaimsIdentity(new GenericIdentity(userName, "Token"), new[]
             {
+                new Claim(ClaimTypes.Name, userName),
                 new Claim(Helpers.Constants.Strings.JwtClaimIdentifiers.Id, id),
                 new Claim(Helpers.Constants.Strings.JwtClaimIdentifiers.Rol, Helpers.Constants.Strings.JwtClaims.ApiAccess)
             });

@@ -7,8 +7,6 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ApiServer", "ApiServer\ApiS
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DAL", "DAL\DAL.csproj", "{86E1BA36-225F-4B4F-86D4-3B5E75C385DE}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Client", "Client\Client.csproj", "{892E77AF-9233-4EAF-B416-0DEF3286E55A}"
-EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -23,10 +21,6 @@ Global
 		{86E1BA36-225F-4B4F-86D4-3B5E75C385DE}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{86E1BA36-225F-4B4F-86D4-3B5E75C385DE}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{86E1BA36-225F-4B4F-86D4-3B5E75C385DE}.Release|Any CPU.Build.0 = Release|Any CPU
-		{892E77AF-9233-4EAF-B416-0DEF3286E55A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{892E77AF-9233-4EAF-B416-0DEF3286E55A}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{892E77AF-9233-4EAF-B416-0DEF3286E55A}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{892E77AF-9233-4EAF-B416-0DEF3286E55A}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
